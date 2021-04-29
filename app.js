@@ -22,6 +22,7 @@ const campgroundRoutes = require("./routes/campgrounds");
 const reviewRoutes = require("./routes/reviews");
 
 const MongoStore = require("connect-mongo");
+const { prototype } = require("connect-mongo");
 
 const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/yelp-camp";
 
@@ -49,7 +50,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
-const secret = process.enc.SECRET || "squirrel";
+const secret = process.env.SECRET || "squirrel";
 const store = MongoStore.create({
   mongoUrl: dbUrl,
   touchAfter: 24 * 60 * 60,
@@ -160,6 +161,7 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error", { err });
 });
 
-app.listen(3000, () => {
-  console.log("Serving on port 3000");
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Serving on port ${port}`);
 });
